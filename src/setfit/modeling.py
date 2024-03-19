@@ -316,13 +316,13 @@ class SetFitModel(PyTorchModelHubMixin):
 
                 eval_loss=None
                 if x_eval is not None and y_eval is not None:
-                    eval_outputs= self.model_head(torch.tensor(self.model_body.encode(x_eval, normalize_embeddings=self.normalize_embeddings)).to(self.device))
+                    eval_logits, probs= self.model_head(torch.tensor(self.model_body.encode(x_eval, normalize_embeddings=self.normalize_embeddings)).to(self.device))
+                    eval_labels=torch.tensor(y_eval).to(self.device)
+                    eval_loss= criterion(eval_logits, eval_labels)
 
-                    eval_loss= criterion(eval_outputs["logits"], torch.tensor(y_eval).to(self.device))
-
-                train_outputs= self.model_head(torch.tensor(self.model_body.encode(x_train, normalize_embeddings=self.normalize_embeddings)).to(self.device))
-
-                train_loss= criterion(train_outputs["logits"], torch.tensor(y_train).to(self.device))
+                train_logits, probs= self.model_head(torch.tensor(self.model_body.encode(x_train, normalize_embeddings=self.normalize_embeddings)).to(self.device))
+                train_labels=torch.tensor(y_train).to(self.device)
+                train_loss= criterion(train_logits, train_labels)
 
                 print(f"Epoch {epoch_idx+1}/{num_epochs} - Train Loss: {train_loss.item()} - Eval Loss: {eval_loss.item()}")
 
