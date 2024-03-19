@@ -316,11 +316,11 @@ class SetFitModel(PyTorchModelHubMixin):
 
                 eval_loss=None
                 if x_eval is not None and y_eval is not None:
-                    eval_outputs= self.model_head(self.model_body.encode(x_eval, normalize_embeddings=self.normalize_embeddings))
+                    eval_outputs= self.model_head(torch.tensor(self.model_body.encode(x_eval, normalize_embeddings=self.normalize_embeddings)).to(self.device))
 
                     eval_loss= criterion(eval_outputs["logits"], torch.tensor(y_eval).to(self.device))
 
-                train_outputs= self.model_head(self.model_body.encode(x_train, normalize_embeddings=self.normalize_embeddings))
+                train_outputs= self.model_head(torch.tensor(self.model_body.encode(x_train, normalize_embeddings=self.normalize_embeddings)).to(self.device))
 
                 train_loss= criterion(train_outputs["logits"], torch.tensor(y_train).to(self.device))
 
